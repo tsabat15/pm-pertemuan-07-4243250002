@@ -1,7 +1,9 @@
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'data.dart';
+import 'keranjang_cubit.dart';
 
 class HalamanDetail extends StatelessWidget {
   const HalamanDetail({super.key, required this.produk});
@@ -23,6 +25,9 @@ class HalamanDetail extends StatelessWidget {
       );
     }
 
+    final diKeranjang = context.select(
+      (KeranjangCubit c) => c.state.isi[p.id] ?? 0,
+    );
     final skema = Theme.of(context).colorScheme;
     final teks = Theme.of(context).textTheme;
     final gambar = AspectRatio(
@@ -50,6 +55,16 @@ class HalamanDetail extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           Text(p.deskripsi, style: teks.bodyLarge),
+          const SizedBox(height: 24),
+          FilledButton.icon(
+            onPressed: () => context.read<KeranjangCubit>().tambah(p),
+            icon: const Icon(Icons.add_shopping_cart),
+            label: Text(
+              diKeranjang == 0
+                  ? 'Tambah ke keranjang'
+                  : 'Tambah lagi ($diKeranjang di keranjang)',
+            ),
+          ),
         ],
       ),
     );
